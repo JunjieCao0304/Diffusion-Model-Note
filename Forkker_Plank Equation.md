@@ -1,6 +1,11 @@
 
 # The Fokker-Planck Equation in Diffusion Models
 
+The Fokker-Planck equation describes the probability distribution of the entire state space (the whole cloud) at each time 
+t
+t, while the SDE is just one trajectory (path) moving through that distribution.
+
+
 ## 1. The High-Level Concept: "The Particle vs. The Cloud"
 
 To understand Fokker-Planck, you have to change your perspective from looking at a *single image* to looking at the *probability distribution* of all possible images.
