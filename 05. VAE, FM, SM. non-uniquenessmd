@@ -1,0 +1,66 @@
+# Comparison: VAE vs. Flow Matching vs. Score Matching
+
+## The Core Distinction: Dynamics vs. Mappings
+
+To understand where Variational Autoencoders (VAEs) fit, we must shift our perspective from **Time Evolution** to **Compression**.
+
+### 1. The Physics Mechanics
+
+*   **Flow Matching (Velocity):**
+    *   **Action:** *Transport.*
+    *   **Analogy:** A **Conveyor Belt**. You place a particle on the belt, and the velocity field carries it smoothly to its destination.
+    *   **Mathematics:** $\frac{dx}{dt} = v(x,t)$. You solve an integral over time.
+
+*   **Score Matching (Diffusion):**
+    *   **Action:** *Refinement.*
+    *   **Analogy:** **Reverse Entropy**. You start with a cloud of chaotic gas (noise) and carefully guide the particles as they cool down and condense into a solid structure.
+    *   **Mathematics:** $dx = \nabla \log p(x) dt + dW$. You solve a stochastic differential equation.
+
+*   **VAE (Encoding/Decoding):**
+    *   **Action:** *Teleportation.*
+    *   **Analogy:** **The Star Trek Transporter**.
+        1.  **Encoder:** Scans the object ($x$) and compresses it into a digital blueprint ($z$).
+        2.  **Latent Space:** The blueprint exists in a simplified dimension.
+        3.  **Decoder:** Re-materializes the object from the blueprint.
+    *   **Mathematics:** $z \sim q(z|x)$, then $x' \sim p(x|z)$. There is no "time"—just a direct jump.
+
+---
+
+### 2. Particle Identity and Uncertainty
+
+*   **Flow Matching:**
+    *   Identity is **Strict**. Particle $x$ takes a specific road to become $z$. If you reverse the road, you get $x$ back exactly.
+    *   *Preservation:* Perfect (theoretically).
+
+*   **VAE:**
+    *   Identity is **Fuzzy**.
+    *   The Encoder doesn't map $x$ to a single point; it maps $x$ to a *probability cloud* (Gaussian distribution) in latent space.
+    *   *Why?* This "fuzziness" forces the model to learn a smooth space, but it results in the famous **VAE Blurriness**. You lose the "sharp edges" of the particle's identity.
+
+---
+
+### 3. Conservation of Mass
+
+*   **In Flow/Score:**
+    *   Mass is conserved via the **Continuity Equation**. We explicitly model the flow of density. The "volume" of probability is preserved as it twists and turns.
+
+*   **In VAE:**
+    *   Mass is constrained via the **KL Divergence**.
+    *   Instead of flowing the mass, we force the mass of the encoded data to "fit" inside a standard unit sphere (the prior).
+    *   *The Trade-off:* We often fail to pack the mass perfectly. This creates "holes" in the latent space (poor samples) or "overlap" (blurry samples).
+
+---
+
+### 4. Summary Table
+
+| Feature | **VAE** | **Flow Matching** | **Score Matching** |
+| :--- | :--- | :--- | :--- |
+| **Physics Model** | Compression / Teleportation | Laminar Fluid Flow | Turbulent Diffusion |
+| **Steps to Generate** | 1 (One-shot) | 10 - 100+ (ODE Solver) | 10 - 1000+ (SDE Solver) |
+| **Particle Path** | Discontinuous Jump | Smooth Trajectory | Noisy/Wiggly Path |
+| **Output Quality** | Often Blurry | Sharp | Sharp |
+| **Mathematical Goal** | Maximize Lower Bound (ELBO) | Match Velocity Field | Match Gradient Field |
+
+### Conclusion
+
+If Flow and Score matching are about **learning the journey** (the vector field), VAEs are about **learning the destination map** directly. VAEs are faster because they skip the journey, but they are less accurate because they ignore the complexity of the path.
